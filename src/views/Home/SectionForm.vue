@@ -122,7 +122,7 @@ export default {
         .catch((err) => {
           console.log(err.response)
           this.setAlert({
-            variant: 'success',
+            variant: 'warning',
             message: err.response.statusText,
           });
           this.closeLoading();
