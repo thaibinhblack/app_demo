@@ -1,28 +1,61 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <router-view />
+    <base-loading :loading="loading" />
+    <base-alert 
+      v-for="(alert, index) in notify" 
+      :key="index"
+      v-model="alert.show" 
+      :message="alert.message"
+      :variant="alert.variant" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import BaseAlert from '@/components/stateless/BaseAlert';
+import BaseLoading from '@/components/stateless/BaseLoading';
+import { mapGetters } from 'vuex';
+import {
+  GETTERS,
+} from '@/store/modules/global.d';
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  components: {
+    BaseLoading,
+    BaseAlert,
+  },
+  
+  methods: {
+    setShow(show) {
+      this.show = show;
+    }
+  },
+
+  data: () => ({
+    show: false ,
+    notify: []
+  }),
+
+
+  computed: {
+    ...mapGetters('global', {
+      loading: [GETTERS.loading],
+      alert: [GETTERS.isAlert],
+    }),
+  },
+
+  watch: {
+    alert(newAlert) {
+      if(Object.entries(newAlert).length > 0) {
+        this.setShow(2);
+        this.notify.push({
+          ...newAlert,
+          show: 2
+        });
+      }
+    },
+  },
+};
+</script>
